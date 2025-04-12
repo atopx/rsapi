@@ -2,13 +2,16 @@
 
 A high-performance API template built with Axum, designed for rapid development of secure and maintainable web services.
 
-![Tech Stack](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
-![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+[![Rust](https://img.shields.io/badge/Language-Rust-green.svg?style=flat)](https://www.rust-lang.org/)
+[![GitHub release](https://img.shields.io/github/release/atopx/rsapi.svg)](https://github.com/atopx/rsapi/releases)
+[![GitHub stars](https://img.shields.io/github/stars/atopx/rsapi)](https://github.com/atopx/rsapi/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/atopx/rsapi)](https://github.com/atopx/rsapi/network)
+[![GitHub issues](https://img.shields.io/github/issues/atopx/rsapi)](https://github.com/atopx/rsapi/issues)
 
 ## Features
 
 - 🚀 **Production-Ready**
-  12.9MB Docker image with Alpine base
+  Fast and minimalistic web framework
 - 🔐 **JWT Authentication**
   Secure token-based authentication system
 - ⏰ **Cron Scheduler**
@@ -31,6 +34,7 @@ A high-performance API template built with Axum, designed for rapid development 
 - Tokio 1.x (Async Runtime)
 
 **Infrastructure**:
+
 - Dockerized deployment
 - Multi-stage build optimization
 - Alpine Linux base image
@@ -44,7 +48,7 @@ A high-performance API template built with Axum, designed for rapid development 
    ```
 
 2. **Database Setup**
-  
+
 Ensure PostgreSQL is running with credentials matching your [.env](./.env.sample) configuration.
 
 3. Run with Docker
@@ -95,4 +99,4 @@ cargo test -- --test-threads=1
 
 ---
 
-License: [MIT](LICENSE)
+License: [MIT](./LICENSE)
