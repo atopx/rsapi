@@ -48,7 +48,7 @@ where
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
             .map_err(|_| StatusCode::UNAUTHORIZED)?;
-        // Decode the user data
+        // Decode the claims data
         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
             .map_err(|_| StatusCode::UNAUTHORIZED)?;
 

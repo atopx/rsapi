@@ -51,7 +51,9 @@ A high-performance API template built with Axum, designed for rapid development 
 
 Ensure PostgreSQL is running with credentials matching your [.env](./.env.sample) configuration.
 
-3. Run with Docker
+Initialize the database and table: [sys_tables](./docs/sys_table.sql)
+
+1. Run with Docker
 
     ```bash
     docker-compose up --build -d

@@ -27,6 +27,7 @@ pub async fn start(crontab: &crate::config::Crontab) -> Result<(), JobSchedulerE
     Ok(())
 }
 
+/// example task
 #[tracing::instrument]
 pub async fn example(trace_id: &str) {
     info!(trace_id, "example task");

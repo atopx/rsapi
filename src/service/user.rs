@@ -56,12 +56,12 @@ pub async fn login(Json(params): Json<Params>) -> impl IntoResponse {
                 };
                 Response::success(reply)
             } else {
-                Response::error("用户不存在", StatusCode::BAD_REQUEST)
+                Response::error("user not exists", StatusCode::BAD_REQUEST)
             }
         }
         Err(e) => {
             tracing::error!(error=%e, "user login failed, db error");
-            Response::error("服务异常异常", StatusCode::INTERNAL_SERVER_ERROR)
+            Response::error("Internal Server Error", StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
 }

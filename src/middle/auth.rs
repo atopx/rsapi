@@ -12,7 +12,6 @@ use crate::response::{self};
 
 #[tracing::instrument(skip(req, next))]
 pub async fn authorization(mut req: Request, next: Next) -> Result<Response<Body>, Response<Body>> {
-    // 修改错误类型
     // 从请求头中获取Authorization
     let auth_header = req.headers().get(header::AUTHORIZATION).and_then(|header| header.to_str().ok());
 
@@ -28,7 +27,7 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response<Body
                         "Unauthorized: Invalid token format",
                         StatusCode::UNAUTHORIZED,
                     )
-                    .into_response()); // 转换为正确的响应类型
+                    .into_response());
                 }
             }
         }
@@ -37,7 +36,7 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response<Body
                 "Unauthorized: Missing token",
                 StatusCode::UNAUTHORIZED,
             )
-            .into_response()); // 转换为正确的响应类型
+            .into_response());
         }
     };
     // 验证token
@@ -66,7 +65,7 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response<Body
                 "Unauthorized: Invalid token",
                 StatusCode::UNAUTHORIZED,
             )
-            .into_response()) // 转换为正确的响应类型
+            .into_response())
         }
     }
 }

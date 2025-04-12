@@ -5,7 +5,6 @@ use sea_orm::Database;
 use sea_orm::entity::prelude::*;
 use tracing::info;
 
-// 全局数据库连接句柄
 pub static DB_CONN: OnceLock<DatabaseConnection> = OnceLock::new();
 
 pub async fn init(dsn: &str) -> Result<(), DbErr> {

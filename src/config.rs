@@ -18,7 +18,6 @@ pub struct Crontab {
     pub example: String,
 }
 
-// 静态 OnceCell 实例
 static CONFIG: OnceLock<AppConfig> = OnceLock::new();
 
 /// 获取全局配置（惰性初始化）
