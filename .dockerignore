@@ -1,0 +1,14 @@
+target
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.env
+.env.sample
+src/bin
+src/lib.rs
+.idea
+.vscode
+__pycache__
+*.exe
+.DS_Store

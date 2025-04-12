@@ -1,0 +1,16 @@
+services:
+  api:
+    image: rsapi:${VERSION}
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - TAG=${VERSION}
+
+    restart: unless-stopped
+    ports:
+      - "6000:6000"
+
+    env_file:
+      - .env
