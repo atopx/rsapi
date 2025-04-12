@@ -71,7 +71,7 @@ curl -X POST http://localhost:6000/api/login \
 #### Get User Claims :
 
 ```bash
-curl -X GET http://localhost:6000/api/me \
+curl -X GET http://localhost:6000/api/claims \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
