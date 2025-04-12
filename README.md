@@ -22,7 +22,7 @@ A high-performance API template built with Axum, designed for rapid development 
   Integrated tracing and structured logging
 - 🛡️ **Security**
   CORS middleware and secure headers
-- 🐳 **Minimal docker image**  
+- 🐳 **Minimal docker image**
   12.9MB Docker image with Alpine base
 
 ## Tech Stack
