@@ -13,10 +13,16 @@ use crate::middle;
 use crate::service;
 
 pub fn auth_routes() -> Router {
-    Router::new().route("/claims", get(service::claims)).layer(middleware::from_fn(middle::authorization))
+    Router::new()
+        .route("/claims", get(service::claims))
+        .route("/upload", post(service::upload))
+        .route("/download/{filename}", get(service::download))
+        .layer(middleware::from_fn(middle::authorization))
 }
 
-pub fn no_auth_routes() -> Router { Router::new().route("/login", post(service::login)) }
+pub fn no_auth_routes() -> Router {
+    Router::new().route("/login", post(service::login))
+}
 
 pub fn new() -> Router {
     let trace_layer = tower_http::trace::TraceLayer::new_for_http()

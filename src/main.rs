@@ -29,15 +29,30 @@ async fn main() {
         panic!("Cloud not init database: {e}");
     }
 
-    schedule::start(&config.crontab).await.expect("scheduler start failed");
+    schedule::start(&config.crontab)
+        .await
+        .expect("scheduler start failed");
 
     let app = router::new();
 
-    let listener = tokio::net::TcpListener::bind(&config.server.listen_addr).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&config.server.listen_addr)
+        .await
+        .unwrap();
     tracing::info!(
         "listening on {}, api version {}",
         listener.local_addr().unwrap(),
         &config.server.version
     );
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
+}
+
+async fn shutdown_signal() {
+    // tokio 提供的 ctrl-c 信号监听
+    tokio::signal::ctrl_c()
+        .await
+        .expect("failed to install CTRL+C signal handler");
+    println!("signal received, starting graceful shutdown");
 }

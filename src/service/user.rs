@@ -13,7 +13,7 @@ use crate::model;
 use crate::response::Response;
 
 #[derive(Deserialize)]
-pub struct Params {
+pub struct LoginParams {
     pub username: String,
     pub password: String,
 }
@@ -29,7 +29,7 @@ pub struct Reply {
     pub token: String,
 }
 
-pub async fn login(Json(params): Json<Params>) -> impl IntoResponse {
+pub async fn login(Json(params): Json<LoginParams>) -> impl IntoResponse {
     let db = db::get();
 
     let result = model::sys_user::Entity::find()
