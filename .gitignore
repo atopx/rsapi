@@ -1,2 +1,9 @@
 /target
 .env
+.idea/
+.vscode/
+.gradle/
+build/
+out/
+__pycache__/
+.DS_Store

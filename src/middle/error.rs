@@ -1,5 +1,5 @@
-use axum::body::Body;
 use axum::body::to_bytes;
+use axum::body::Body;
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::middleware::Next;
@@ -25,7 +25,7 @@ pub async fn error_handler(req: Request, next: Next) -> Result<Response<Body>, R
 
     // 消耗响应，将其拆分为 parts 和 body 部分
     let (parts, body) = resp.into_parts();
-    
+
     // 构造自定义的错误响应返回
     let bytes = to_bytes(body, 4096).await.unwrap_or_default();
     let message = String::from_utf8_lossy(&bytes).to_string();

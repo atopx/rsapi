@@ -1,6 +1,9 @@
-use axum::Json;
+use axum::body::Body;
+use axum::http::header;
 use axum::http::StatusCode;
 use axum::response;
+use axum::response::IntoResponse;
+use axum::Json;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -27,6 +30,19 @@ impl<T: Serialize + Default> Response<T> {
     }
 }
 
-impl<T: Serialize> response::IntoResponse for Response<T> {
+impl<T> Response<T> {
+    pub fn file(
+        filename: String, body: Body, content_type: Option<String>,
+    ) -> axum::http::Response<Body> {
+        let content_type = content_type.unwrap_or("application/octet-stream".to_string());
+        let headers = [
+            (header::CONTENT_TYPE, &content_type),
+            (header::CONTENT_DISPOSITION, &format!("attachment; filename=\"{}\"", filename)),
+        ];
+        (headers, body).into_response()
+    }
+}
+
+impl<T: Serialize> IntoResponse for Response<T> {
     fn into_response(self) -> response::Response { (StatusCode::OK, Json(self)).into_response() }
 }
