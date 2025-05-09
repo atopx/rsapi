@@ -20,6 +20,7 @@ pub fn auth_routes() -> Router {
         .route("/upload/{filename}", post(service::upload))
         .route("/download/{filename}", get(service::download))
         .layer(middleware::from_fn(middle::authorization))
+        .layer(middleware::from_fn(middle::error_handler))
 }
 
 /// no need authorization
@@ -43,5 +44,4 @@ pub fn new() -> Router {
         .nest("/api", no_auth_routes())
         .layer(tower_http::cors::CorsLayer::permissive())
         .layer(trace_layer)
-        .layer(middleware::from_fn(middle::error_handler))
 }
