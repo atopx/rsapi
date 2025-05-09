@@ -12,23 +12,22 @@ use tower_http::classify::ServerErrorsFailureClass;
 use crate::middle;
 use crate::service;
 
+/// need authorization
 pub fn auth_routes() -> Router {
     Router::new()
         .route("/claims", get(service::claims))
-        .route("/upload", post(service::upload))
+        .route("/form_upload", post(service::form_upload))
+        .route("/upload/{filename}", post(service::upload))
         .route("/download/{filename}", get(service::download))
         .layer(middleware::from_fn(middle::authorization))
 }
 
-pub fn no_auth_routes() -> Router {
-    Router::new().route("/login", post(service::login))
-}
+/// no need authorization
+pub fn no_auth_routes() -> Router { Router::new().route("/login", post(service::login)) }
 
 pub fn new() -> Router {
     let trace_layer = tower_http::trace::TraceLayer::new_for_http()
-        .make_span_with(
-            |_: &Request<Body>| tracing::info_span!("API", trace_id = %uuid::Uuid::new_v4().to_string()),
-        )
+        .make_span_with(|_: &Request<Body>| tracing::info_span!("API", trace_id = %uuid::Uuid::new_v4().to_string()))
         .on_request(|req: &Request<Body>, span: &tracing::Span| {
             tracing::debug!(parent: span, method = %req.method(), uri = %req.uri(), "request");
         })

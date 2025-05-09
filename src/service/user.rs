@@ -10,7 +10,7 @@ use serde::Serialize;
 use crate::db;
 use crate::jwt;
 use crate::model;
-use crate::response::Response;
+use crate::response::ApiResponse;
 
 #[derive(Deserialize)]
 pub struct LoginParams {
@@ -41,7 +41,7 @@ pub async fn login(Json(params): Json<LoginParams>) -> impl IntoResponse {
         Ok(user) => {
             if let Some(user) = user {
                 if user.password != format!("{:x}", md5::compute(params.password)) {
-                    return Response::error("登陆密码错误", StatusCode::BAD_REQUEST);
+                    return ApiResponse::error("登陆密码错误", StatusCode::BAD_REQUEST);
                 };
                 let claims = jwt::Claims::new(user.id, &user.username);
 
@@ -54,14 +54,14 @@ pub async fn login(Json(params): Json<LoginParams>) -> impl IntoResponse {
                     name: user.name.clone(),
                     token: claims.token(),
                 };
-                Response::success(reply)
+                ApiResponse::success(reply)
             } else {
-                Response::error("user not exists", StatusCode::BAD_REQUEST)
+                ApiResponse::error("user not exists", StatusCode::BAD_REQUEST)
             }
         }
         Err(e) => {
             tracing::error!(error=%e, "user login failed, db error");
-            Response::error("Internal Server Error", StatusCode::INTERNAL_SERVER_ERROR)
+            ApiResponse::error("Internal Server Error", StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
 }

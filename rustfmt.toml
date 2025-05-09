@@ -1,0 +1,9 @@
+newline_style = "Unix"
+max_width = 120
+use_small_heuristics = "Max"
+fn_single_line = true
+fn_args_layout = "Compressed"
+fn_params_layout = "Compressed"
+imports_granularity = "Item"
+group_imports = "StdExternalCrate"
+

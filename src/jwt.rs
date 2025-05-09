@@ -44,10 +44,8 @@ where
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
         // Extract the token from the authorization header
-        let TypedHeader(Authorization(bearer)) = parts
-            .extract::<TypedHeader<Authorization<Bearer>>>()
-            .await
-            .map_err(|_| StatusCode::UNAUTHORIZED)?;
+        let TypedHeader(Authorization(bearer)) =
+            parts.extract::<TypedHeader<Authorization<Bearer>>>().await.map_err(|_| StatusCode::UNAUTHORIZED)?;
         // Decode the claims data
         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
             .map_err(|_| StatusCode::UNAUTHORIZED)?;
@@ -74,7 +72,6 @@ impl Keys {
 
 static KEYS: LazyLock<Keys> = LazyLock::new(|| {
     let secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
-    let jwt_exp =
-        std::env::var("JWT_EXPIRATION").ok().and_then(|v| v.parse::<i64>().ok()).unwrap_or(86400);
+    let jwt_exp = std::env::var("JWT_EXPIRATION").ok().and_then(|v| v.parse::<i64>().ok()).unwrap_or(86400);
     Keys::new(secret.as_bytes(), jwt_exp)
 });

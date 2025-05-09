@@ -28,7 +28,7 @@ A high-performance API template built with Axum, designed for rapid development 
 ## Tech Stack
 
 **Core Components**:
-- Axum 0.6 (Web Framework)
+- Axum 0.8 (Web Framework)
 - SeaORM 1.x (PostgreSQL ORM)
 - JSON Web Tokens (JWT)
 - Tokio 1.x (Async Runtime)
