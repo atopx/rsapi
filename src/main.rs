@@ -1,45 +1,30 @@
-use tracing_subscriber::EnvFilter;
-use tracing_subscriber::fmt::time::OffsetTime;
-
-mod buffer;
-mod config;
-mod db;
-mod jwt;
-mod middle;
-mod model;
-mod response;
-mod router;
-mod schedule;
-mod service;
-
-pub fn init_env() {
-    dotenv::dotenv().ok();
-    let env_filter = EnvFilter::try_from_default_env();
-    let env_filter = env_filter.unwrap_or_else(|_| EnvFilter::new("info,tower_http=debug,sqlx=warn"));
-    tracing_subscriber::fmt().with_timer(OffsetTime::local_rfc_3339().unwrap()).with_env_filter(env_filter).init();
-}
+use axum::Router;
+use axum::routing;
+use config::Config;
+use rsapi::common::trace;
+use rsapi::domain::example;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
 #[tokio::main]
 async fn main() {
-    init_env();
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "info,sqlx=info,tower_http=trace,axum::rejection=trace".into()),
+        )
+        .with(tracing_subscriber::fmt::layer().with_file(true).with_line_number(true).with_target(true))
+        .init();
 
-    let config = config::get();
-
-    if let Err(e) = db::init(&config.server.database_url).await {
-        panic!("Cloud not init database: {e}");
-    }
-
-    schedule::start(&config.crontab).await.expect("scheduler start failed");
-
-    let app = router::new();
-
-    let listener = tokio::net::TcpListener::bind(&config.server.listen_addr).await.unwrap();
-    tracing::info!("listening on {}, api version {}", listener.local_addr().unwrap(), &config.server.version);
+    let config = Config::builder().add_source(config::File::with_name("config")).build().unwrap();
+    let app = Router::new().route("/", routing::get(example::handler)).route_layer(axum::middleware::from_fn(trace::logging));
+    
+    let listener = tokio::net::TcpListener::bind(config.get_string("service.listen_addr").unwrap()).await.unwrap();
+    tracing::info!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).with_graceful_shutdown(shutdown_signal()).await.unwrap();
 }
 
 async fn shutdown_signal() {
-    // tokio 提供的 ctrl-c 信号监听
     tokio::signal::ctrl_c().await.expect("failed to install CTRL+C signal handler");
     println!("signal received, starting graceful shutdown");
 }
