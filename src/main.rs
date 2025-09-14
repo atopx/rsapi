@@ -6,21 +6,16 @@ use rsapi::app::AppStaate;
 use rsapi::common::trace;
 use rsapi::domain::example;
 use rsapi::setting::Setting;
+use tracing_subscriber::EnvFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "info,sqlx=info,tower_http=trace,axum::rejection=trace".into()),
-        )
-        .with(tracing_subscriber::fmt::layer().with_file(true).with_line_number(true).with_target(true))
-        .init();
-
     let cfg = CfgLib::builder().add_source(CfgFile::with_name("setting")).build().unwrap();
     let setting: Setting = cfg.try_deserialize().unwrap();
+
+    init_tracing(&setting);
 
     let listener = tokio::net::TcpListener::bind(&setting.service.listen_addr).await.unwrap();
     tracing::info!("listening on {}", &setting.service.listen_addr);
@@ -35,5 +30,41 @@ async fn main() {
 
 async fn shutdown_signal() {
     tokio::signal::ctrl_c().await.expect("failed to install CTRL+C signal handler");
-    println!("signal received, starting graceful shutdown");
+    tracing::info!("signal received, starting graceful shutdown");
+}
+
+fn init_tracing(setting: &Setting) {
+    // Prefer RUST_LOG if present; otherwise fall back to config level
+    let env_filter = EnvFilter::try_from_env("RUST_LOG")
+        .or_else(|_| EnvFilter::try_new(&setting.logging.level))
+        .unwrap_or_else(|_| EnvFilter::new("info"));
+
+    match setting.logging.format.as_str() {
+        // structured JSON logs
+        "json" => {
+            tracing_subscriber::registry()
+                .with(env_filter)
+                .with(
+                    tracing_subscriber::fmt::layer()
+                        .json()
+                        .with_file(true)
+                        .with_line_number(true)
+                        .with_target(true),
+                )
+                .init();
+        }
+        // human-friendly pretty logs (default)
+        _ => {
+            tracing_subscriber::registry()
+                .with(env_filter)
+                .with(
+                    tracing_subscriber::fmt::layer()
+                        .pretty()
+                        .with_file(true)
+                        .with_line_number(true)
+                        .with_target(true),
+                )
+                .init();
+        }
+    };
 }

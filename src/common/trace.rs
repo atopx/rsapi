@@ -11,7 +11,6 @@ use tracing::warn;
 
 use crate::common::response::ApiResponse;
 
-
 #[inline]
 pub fn new_trace_id() -> String {
     let mut b = [0u8; 16];

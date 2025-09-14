@@ -1,2 +1,7 @@
 [service]
 listen_addr = "0.0.0.0:3000"
+
+[logging]
+# RUST_LOG-style filter; overridden by env var RUST_LOG when set
+level = "info,sqlx=info,tower_http=trace,axum::rejection=trace"
+format = "json" # json or pretty
