@@ -1,6 +1,6 @@
 services:
   api:
-    image: rsapi:${VERSION}
+    image: ${NAME}:${VERSION}
     container_name: api
     build:
       context: .

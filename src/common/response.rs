@@ -3,6 +3,8 @@ use axum::response::Response;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::common::trace;
+
 /// A standardized API response format.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ApiResponse<T>
@@ -20,13 +22,18 @@ where
     T: Serialize,
 {
     /// Create a success response with default message "success".
-    pub fn success(data: T, trace_id: impl Into<String>) -> Self {
-        Self { status: 200, message: "success".into(), data: Some(data), trace_id: trace_id.into() }
+    pub fn success(data: T) -> Self {
+        Self {
+            status: 200,
+            message: "success".into(),
+            data: Some(data),
+            trace_id: trace::current_trace_id(),
+        }
     }
 
     /// Create a failure response with no data.
-    pub fn failure(status: u16, message: impl Into<String>, trace_id: impl Into<String>) -> Self {
-        Self { status, message: message.into(), data: None, trace_id: trace_id.into() }
+    pub fn failure(status: u16, message: impl Into<String>) -> Self {
+        Self { status, message: message.into(), data: None, trace_id: trace::current_trace_id() }
     }
 }
 

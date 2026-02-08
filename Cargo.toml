@@ -1,5 +1,5 @@
 [package]
-name = "rsapi"
+name = "api"
 version = "0.1.0"
 edition = "2024"
 
@@ -12,9 +12,15 @@ serde_json = "1"
 
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
-fastrand = "2.3.0"
 
 config = { version = "0.15", default-features = false, features = ["toml"] }
+tracing-opentelemetry = { version = "0.32.1", default-features = false }
+opentelemetry = { version = "0.31.0", default-features = false, features = ["trace"] }
+opentelemetry_sdk = { version = "0.31.0", default-features = false, features = ["trace"] }
+
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
 
 [profile.dev]
 incremental = true
