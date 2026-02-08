@@ -7,27 +7,27 @@ pub struct Setting {
     pub logging: LoggingSetting,
 }
 
+impl Default for Setting {
+    fn default() -> Self {
+        Self {
+            service: ServiceSetting {
+                name: "api".to_string(),
+                listen_addr: "localhost:3000".to_string(),
+            },
+            logging: LoggingSetting { level: "info".to_string(), format: "pretty".to_string() },
+        }
+    }
+}
+
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct ServiceSetting {
-    #[serde(default = "default_service_name")]
     pub name: String,
-    #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct LoggingSetting {
     // RUST_LOG-style filter string, e.g. "info,sqlx=info,tower_http=trace"
-    #[serde(default = "default_logging_level")]
     pub level: String,
-    #[serde(default = "default_logging_format")]
     pub format: String, // pretty or json
 }
-
-fn default_service_name() -> String { "api".to_string() }
-
-fn default_listen_addr() -> String { "localhost:3000".to_string() }
-
-fn default_logging_level() -> String { "info".to_string() }
-
-fn default_logging_format() -> String { "pretty".to_string() }

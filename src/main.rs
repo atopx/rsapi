@@ -19,8 +19,12 @@ pub mod setting;
 
 #[tokio::main]
 async fn main() {
-    let cfg = CfgLib::builder().add_source(CfgFile::with_name("setting")).build().unwrap_or_default();
-    let setting: setting::Setting = cfg.try_deserialize().unwrap();
+    let cfg = CfgLib::builder()
+        .add_source(CfgFile::with_name("setting").required(false))
+        .add_source(CfgFile::with_name("config").required(false))
+        .build()
+        .unwrap_or_default();
+    let setting: setting::Setting = cfg.try_deserialize().unwrap_or_default();
 
     init_tracing(&setting);
 
